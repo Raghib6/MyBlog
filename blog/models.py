@@ -25,6 +25,7 @@ class Post(models.Model):
     total_comment = models.IntegerField()
     author = models.ForeignKey(Author,on_delete=models.CASCADE)
     post_category = models.ManyToManyField(Category)
+    featured = models.BooleanField()
 
     def __str__(self):
         return self.title
