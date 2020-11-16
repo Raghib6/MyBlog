@@ -10,7 +10,7 @@ class Author(models.Model):
 
     def __str__(self):
         return self.user.username
-    
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -34,13 +34,25 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+    @property
+    def comments(self):
+        return self.post_comments.all()
+
+class PostView(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
+
+    
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
-    post = models.ForeignKey(
-        'Post', related_name='comments', on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', related_name='post_comments', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username
@@ -53,5 +65,14 @@ class Comment(models.Model):
     @property
     def get_comments(self):
         return self.comments.all().order_by('-date')
+
+    @property
+    def comment_count(self):
+        return Comment.objects.filter(post=self).count()
+
+    @property
+    def view_count(self):
+        return PostView.objects.filter(post=self).count()
+
 
     

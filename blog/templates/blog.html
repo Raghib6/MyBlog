@@ -24,8 +24,8 @@
                   <p class="text-muted">{{ blog.description|truncatechars:200 }}</p>
                   <footer class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
                       <div class="avatar"><img src="{{ blog.author.profile_pic.url }}" alt="..." class="img-fluid"></div>
-                      <div class="title"><span>{{ blog.author.user.username }}ago</span></div></a>
-                    <div class="date"><i class="icon-clock"></i>{{ blog.date|timesince }}</div>
+                      <div class="title"><span>{{ blog.author.user.username }}</span></div></a>
+                    <div class="date"><i class="icon-clock"></i>{{ blog.date|timesince }} ago</div>
                     <div class="comments meta-last"><i class="icon-comment"></i>{{ blog.total_comment }}</div>
                   </footer>
                 </div>
@@ -35,14 +35,14 @@
             <!-- Pagination -->
             <nav aria-label="Page navigation example">
               <ul class="pagination pagination-template d-flex justify-content-center">
-                {% if page_obj.has_previous %}
-                <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}" class="page-link"> <i class="fa fa-angle-left"></i></a></li>
-                {% endif %}
-                <li class="page-item"><a href="?{{ page }}={{ page_obj.number }}" class="page-link active">{{ page_obj.number }}</a></li>
-                {% if page_obj.has_next %}
-                <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link"> <i class="fa fa-angle-right"></i></a></li>
-                {% endif %}
-              </ul>
+                 {% if page_obj.has_previous %}
+                   <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}" class="page-link"> <i class="fa fa-angle-left"></i></a></li>
+                 {% endif %}
+                    <li class="page-item"><a href="?{{ page }}={{ page_obj.number }}" class="page-link active">{{ page_obj.number }}</a></li>
+                 {% if page_obj.has_next %}
+                    <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link"> <i class="fa fa-angle-right"></i></a></li>
+                  {% endif %}
+               </ul>
             </nav>
           </div>
         </main>

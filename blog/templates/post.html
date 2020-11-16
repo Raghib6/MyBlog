@@ -23,8 +23,10 @@
                     <a href="#">{{ cat }}</a>
                     {% endfor %}
                   </div>
-                  
-
+                  <div>
+                    <a href="{% url 'update_post' pk=post.pk %}">Update</a>
+                    <a href="{% url 'delete_post' pk=post.pk %}">Delete</a>
+                  </div>
                 </div>
                 <h1>{{ post.title }}<a href="#"><i class="fa fa-bookmark-o"></i></a></h1>
                 <div class="post-footer d-flex align-items-center flex-column flex-sm-row"><a href="#" class="author d-flex align-items-center flex-wrap">
@@ -32,53 +34,53 @@
                     <div class="title"><span>{{ post.author.user.username }}</span></div></a>
                   <div class="d-flex align-items-center flex-wrap">       
                     <div class="date"><i class="icon-clock"></i> {{ post.date|timesince }} ago</div>
-                    <div class="views"><i class="icon-eye"></i> {{ post.total_view }}</div>
-                    <div class="comments meta-last"><i class="icon-comment"></i>{{ post.total_comment }}</div>
+                    <div class="views"><i class="icon-eye"></i> {{ post.view_count }}</div>
+                    <div class="comments meta-last"><i class="icon-comment"></i>{{ post.comment_count }}</div>
                   </div>
                 </div>
                 <div class="post-body">
                   {{ post.content | safe }}
                 </div>
                 <div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row">
-                  {% if post.previous_post %}
-                  <a href="{% url 'blog_details' post.previous_post.id %}" class="prev-post text-left d-flex align-items-center">
-                      <div class="icon prev"><i class="fa fa-angle-left"></i></div>
-                      <div class="text"><strong class="text-primary">Previous Post </strong>
-                        <h6>{{ post.previous_post.title }}</h6>
-                      </div>
-                  </a>
-                  {% endif %}
-                  {% if post.next_post %}
-                  <a href="{% url 'blog_details' post.next_post.id %}" class="next-post text-right d-flex align-items-center justify-content-end">
-                      <div class="text"><strong class="text-primary">Next Post </strong>
-                        <h6>{{ post.next_post.title }}</h6>
-                      </div>
-                      <div class="icon next"><i class="fa fa-angle-right">   </i></div>
-                  </a>
-                  {% endif %}
-                  </div>
-                  <div class="post-comments">
-                    <header>
-                      <h3 class="h6">Post Comments<span class="no-of-comments">({{ post.comments.count }})</span></h3>
-                    </header>
-                    {% for comment in post.get_comments %}
-                    <div class="comment">
-                      <div class="comment-header d-flex justify-content-between">
-                        <div class="user d-flex align-items-center">
-                          <div class="image">
-                            {% if comment.user.author %}
-                            <img src="{{ comment.user.author.profile_pic.url }}" alt="..." class="img-fluid rounded-circle">
-                            {% else %}
-                            <img src="{% static 'img/user.svg' %}" alt="..." class="img-fluid rounded-circle">
-                            {% endif %}
-                          </div>
-                          <div class="title"><strong>{{ comment.user.username }}</strong><span class="date">{{ comment.date|timesince }} ago</span></div>
+                {% if post.previous_post %}
+                <a href="{% url 'blog_details' post.previous_post.id %}" class="prev-post text-left d-flex align-items-center">
+                    <div class="icon prev"><i class="fa fa-angle-left"></i></div>
+                    <div class="text"><strong class="text-primary">Previous Post </strong>
+                      <h6>{{ post.previous_post.title }}</h6>
+                    </div>
+                </a>
+                {% endif %}
+                {% if post.next_post %}
+                <a href="{% url 'blog_details' post.next_post.id %}" class="next-post text-right d-flex align-items-center justify-content-end">
+                    <div class="text"><strong class="text-primary">Next Post </strong>
+                      <h6>{{ post.next_post.title }}</h6>
+                    </div>
+                    <div class="icon next"><i class="fa fa-angle-right">   </i></div>
+                </a>
+                {% endif %}
+                </div>
+                <div class="post-comments">
+                  <header>
+                    <h3 class="h6">Post Comments<span class="no-of-comments">({{ post.comments.count }})</span></h3>
+                  </header>
+                  {% for comment in post_comments.get_comments %}
+                  <div class="comment">
+                    <div class="comment-header d-flex justify-content-between">
+                      <div class="user d-flex align-items-center">
+                        <div class="image">
+                          {% if comment.user.author %}
+                          <img src="{{ comment.user.author.profile_pic.url }}" alt="..." class="img-fluid rounded-circle">
+                          {% else %}
+                          <img src="{% static 'img/user.svg' %}" alt="..." class="img-fluid rounded-circle">
+                          {% endif %}
                         </div>
-                      </div>
-                      <div class="comment-body">
-                        <p>{{ comment.content }}</p>
+                        <div class="title"><strong>{{ comment.user.username }}</strong><span class="date">{{ comment.timestamp|timesince }} ago</span></div>
                       </div>
                     </div>
+                    <div class="comment-body">
+                      <p>{{ comment.content }}</p>
+                    </div>
+                  </div>
                   {% endfor %}
                 </div>
                 {% if request.user.is_authenticated %}
@@ -105,7 +107,7 @@
             </div>
           </div>
         </main>
-      {% include 'sidebar.html' with recent_post=recent_post post_category_count=post_category_count %} 
+        {% include 'sidebar.html' with recent_post=recent_post category_count=category_count %}        
       </div>
     </div>
 {% endblock content %}

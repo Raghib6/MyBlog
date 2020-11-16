@@ -2,7 +2,13 @@ from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from django.shortcuts import render,redirect
 from .models import *
 from django.db.models import Count,Q
-from .forms import CommentForm
+from .forms import CommentForm,CreatePost
+
+def get_author(user):
+    qs = Author.objects.filter(user=user)
+    if qs.exists():
+        return qs[0]
+    return None
 
 def searchQ(request):
     queryset = Post.objects.all()
@@ -34,7 +40,7 @@ def blog(request):
     blogs = Post.objects.all()
     recent_post = Post.objects.order_by('-date')[0:3]
     category_count = get_category_count()
-    paginator = Paginator(blogs, 1)
+    paginator = Paginator(blogs, 2)
     page_numb = request.GET.get('page')
     try:
         page_obj = paginator.get_page(page_numb)
@@ -69,3 +75,43 @@ def details(request,pk):
         'form':form,
     }
     return render(request,'post.html',context)
+
+def contactView(request):
+    return render(request,'contact.html')
+
+def createView(request):
+    form = CreatePost()
+    author = get_author(request.user)
+    if request.method=="POST":
+        form = CreatePost(request.POST,request.FILES)
+        if form.is_valid():
+            form.instance.author = author 
+            form.save()
+            return redirect('/')
+    
+    context ={
+        'form' : form,
+    }
+    return render(request,'createblog.html',context)
+
+def updateView(request,pk):
+    post = Post.objects.get(id=pk)
+    form = CreatePost(instance=post)
+    if request.method=="POST":
+        form = CreatePost(request.POST,instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+
+    context ={
+        'post':post,
+        'form' : form,
+    }
+    return render(request,'createblog.html',context)
+
+def deleteView(request,pk):
+    post = Post.objects.get(id=pk)
+    if request.method=="POST":
+        post.delete()
+        return redirect('/')
+    return render(request,'delete.html',{'post':post})
